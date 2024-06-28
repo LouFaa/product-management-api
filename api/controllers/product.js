@@ -1,9 +1,8 @@
 const { Product } = require('../models/product')
-const express = require('express')
 const { openConnection, closeConnection, is_connected } = require('../helpers/database.js')
 const { authorizeRole } = require('../helpers/middleware.js')
 
-const router = express.Router();
+
 
 function filterProducts(req, res) {
 
@@ -41,12 +40,13 @@ function getProducts(req, res) {
             })
         } else {
             if (sort) {
-                if (sort === "asc"){
+                if (sort === "asc") {
                     let result = products.sort((a, b) => a.price - b.price)
                     res.status(200).json(result)
-                }else{
+                } else {
                     let result = products.sort((a, b) => b.price - a.price)
-                    res.status(200).json(result)}
+                    res.status(200).json(result)
+                }
             }
             else {
                 res.status(200).json(products)
@@ -58,9 +58,8 @@ function getProducts(req, res) {
 }
 
 function addProduct(req, res) {
-
-    openConnection()
     if (authorizeRole(req, res, 'owner')) {
+        openConnection()
         let product = new Product()
         product.name = req.body.name
         product.category = req.body.category
@@ -76,16 +75,17 @@ function addProduct(req, res) {
             res.status(300).json(err)
         })
 
-    }
-    if (is_connected) closeConnection()
 
+        if (is_connected) closeConnection()
+    }
 }
 
-function setProduct(req, res) {
-    const id = req.swagger.params['id'].value
-    openConnection()
-    if (authorizeRole(req, res, 'owner')) {
-        Product.findById(id, (err, product) => {
+  function setProduct(req, res) {
+    if ( authorizeRole(req, res, 'owner')) {
+        const id = req.swagger.params['id'].value
+        openConnection()
+
+          Product.findById(id, (err, product) => {
             if (err) {
                 res.status(300).json(err)
             } else if (product === null) {
@@ -108,9 +108,11 @@ function setProduct(req, res) {
                 })
             }
         })
+
+        if (is_connected) closeConnection()
     }
-    if (is_connected) closeConnection()
 }
+
 function getProduct(req, res) {
     const id = req.swagger.params['id'].value
 
