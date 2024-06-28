@@ -1,0 +1,173 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: product API
+  description: This API contains evey interation
+# during dev, should point to your local machine
+host: localhost:8000
+# basePath prefixes all resource paths
+basePath: /
+#
+schemes:
+  # tip: remove http to make production-grade
+  - https
+# format of bodies a client can send (Content-Type)
+consumes:
+  - application/json
+# format of the responses to the client (Accepts)
+produces:
+  - application/json
+paths:
+  /auth/signup:
+    x-swagger-router-controller: user
+    post:
+      operationId: signup
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+
+      description: inscription
+      responses:
+        201:
+          description: OK sent
+        300:
+          description: Faild to modify resource.
+    
+  /auth/login:
+    x-swagger-router-controller: user
+    post:
+      operationId: login
+      description: Send login info 
+      parameters:
+        - name: body
+          in: body
+          schema:
+            type: object
+      responses:
+        200:
+          description: User waits for confirmation code
+          schema:
+            type: object
+        300:
+          description: Error in the login info, or server error
+          schema:
+            type: object
+  
+  /products:
+    x-swagger-router-controller: product
+    post:
+      consumes:
+        - multipart/form-data
+      operationId: addProduct
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+
+      description: add product
+      responses:
+        200:
+          description: OK sent
+        300:
+          description: Faild to modify resource.
+    get:
+      operationId: getProducts
+      description: get product 
+      responses:
+        200:
+          description: OK
+        300:
+          description: Fail
+  /products/category/{search}:
+    x-swagger-router-controller: product
+    get:
+      parameters:
+        - in: path
+          name: search
+          required: true
+          description: id of the user
+          type: string
+      operationId: searchProducts
+      description: set product info
+      responses:
+        200:
+          description: OK sent
+        300:
+          description: Faild to modify resource.
+  /products/sortby/{sort}:
+    x-swagger-router-controller: product 
+      
+    get:
+      parameters:
+        - in: path
+          name: sort
+          required: true
+          description: id of the user
+          type: string
+      operationId: getProducts
+      description: get product 
+      responses:
+        200:
+          description: OK
+        300:
+          description: Fail
+  /products/{id}:
+    x-swagger-router-controller: product
+    put:
+      consumes:
+        - multipart/form-data
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+        - in: path
+          name: id
+          required: true
+          description: id of the product
+          type: string
+      operationId: setProduct
+      description: set product info
+      responses:
+        200:
+          description: OK sent
+        300:
+          description: Faild to modify resource.
+          schema:
+            type: object
+    delete:
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: id of the product
+          type: string
+      operationId: deleteProduct
+      
+      description: delete product info
+      responses:
+        200:
+          description: OK sent
+        300:
+          description: Faild to modify resource.
+    get:
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: id of the product
+          type: string
+      operationId: getProduct
+      
+      description: get product info
+      responses:
+        200:
+          description: OK sent
+        300:
+          description: Faild to modify resource. 
+
+ 
+  
